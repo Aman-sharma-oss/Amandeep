@@ -24,11 +24,11 @@
                 <input type="text" id="search" placeholder="Search" 
                        class="w-full yt-search rounded-l-full px-5 py-2 focus:outline-none focus:border-blue-500"
                        onkeyup="engine.search(this.value)">
-                <button class="bg-[#222] border border-l-0 border-[#333] px-5 rounded-r-full">🔍</button>
+                <button class="bg-[#222] border border-l-0 border-[#333] px-5 rounded-r-full" aria-label="Search">🔍</button>
             </div>
         </div>
         <div class="flex items-center gap-4">
-            <div class="bg-blue-600 px-4 py-1.5 rounded-full text-sm font-medium cursor-pointer" onclick="alert('CEO Login Required')">Sign In</div>
+            <button class="bg-blue-600 px-4 py-1.5 rounded-full text-sm font-medium cursor-pointer" onclick="alert('CEO Login Required')">Sign In</button>
         </div>
     </nav>
 
@@ -79,16 +79,50 @@
 
             render: function(list) {
                 const feed = document.getElementById('side-feed');
-                feed.innerHTML = list.map(v => `
-                    <div class="flex gap-3 cursor-pointer group" onclick="engine.play('${v.title}', '${v.img}')">
-                        <div class="sidebar-thumb bg-cover bg-center" style="background-image: url('${v.img}')"></div>
-                        <div class="flex flex-col">
-                            <h4 class="text-sm font-bold line-clamp-2 group-hover:text-[#D4AF37]">${v.title}</h4>
-                            <p class="text-xs text-gray-400 mt-1">${v.user}</p>
-                            <p class="text-xs text-gray-400">${v.views} views</p>
-                        </div>
-                    </div>
-                `).join('');
+                feed.innerHTML = '';
+                list.forEach((v, index) => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'flex gap-3 cursor-pointer group';
+                    videoCard.setAttribute('role', 'button');
+                    videoCard.setAttribute('tabindex', '0');
+                    videoCard.setAttribute('data-index', index);
+                    
+                    const thumb = document.createElement('div');
+                    thumb.className = 'sidebar-thumb bg-cover bg-center';
+                    thumb.style.backgroundImage = `url('${v.img}')`;
+                    
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'flex flex-col';
+                    
+                    const title = document.createElement('h4');
+                    title.className = 'text-sm font-bold line-clamp-2 group-hover:text-[#D4AF37]';
+                    title.textContent = v.title;
+                    
+                    const user = document.createElement('p');
+                    user.className = 'text-xs text-gray-400 mt-1';
+                    user.textContent = v.user;
+                    
+                    const views = document.createElement('p');
+                    views.className = 'text-xs text-gray-400';
+                    views.textContent = v.views + ' views';
+                    
+                    contentDiv.appendChild(title);
+                    contentDiv.appendChild(user);
+                    contentDiv.appendChild(views);
+                    
+                    videoCard.appendChild(thumb);
+                    videoCard.appendChild(contentDiv);
+                    
+                    videoCard.onclick = () => engine.play(v.title, v.img);
+                    videoCard.onkeypress = (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            engine.play(v.title, v.img);
+                        }
+                    };
+                    
+                    feed.appendChild(videoCard);
+                });
             },
 
             play: function(title, img) {
