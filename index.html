@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OMNIA | VIDEO PLATFORM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0f0f0f; color: white; font-family: "Roboto", Arial, sans-serif; }
+        .yt-search { background-color: #121212; border: 1px solid #333; }
+        .video-main { aspect-ratio: 16 / 9; background: #000; border-radius: 12px; }
+        .sidebar-thumb { width: 168px; height: 94px; border-radius: 8px; flex-shrink: 0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 w-full bg-[#0f0f0f] flex justify-between items-center px-4 py-2 z-50">
+        <div class="flex items-center gap-4">
+            <span class="text-2xl font-bold tracking-tighter text-[#D4AF37]">OMNIA</span>
+        </div>
+        <div class="flex-grow max-w-2xl px-8">
+            <div class="flex">
+                <input type="text" id="search" placeholder="Search" 
+                       class="w-full yt-search rounded-l-full px-5 py-2 focus:outline-none focus:border-blue-500"
+                       onkeyup="engine.search(this.value)">
+                <button class="bg-[#222] border border-l-0 border-[#333] px-5 rounded-r-full">🔍</button>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="bg-blue-600 px-4 py-1.5 rounded-full text-sm font-medium cursor-pointer" onclick="alert('CEO Login Required')">Sign In</div>
+        </div>
+    </nav>
+
+    <main class="pt-20 px-6 max-w-[1700px] mx-auto grid grid-cols-12 gap-6">
+        
+        <div class="col-span-12 lg:col-span-8">
+            <div class="video-main flex items-center justify-center overflow-hidden mb-4">
+                <img id="active-video-img" src="https://images.unsplash.com/photo-1514525253361-bee8718a747c" class="w-full h-full object-cover">
+            </div>
+            
+            <h1 id="active-title" class="text-xl font-bold mb-2">Omnia Global Launch Event</h1>
+            
+            <div class="flex justify-between items-center pb-6 border-b border-[#333] mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-[#D4AF37]"></div>
+                    <div>
+                        <p class="font-bold text-sm">OMNIA Official <span class="text-blue-400">✓</span></p>
+                        <p class="text-xs text-gray-400">10.4M subscribers</p>
+                    </div>
+                    <button class="ml-4 bg-white text-black px-4 py-2 rounded-full text-sm font-medium">Subscribe</button>
+                </div>
+                <div class="flex gap-2">
+                    <button class="bg-[#222] hover:bg-[#333] px-4 py-2 rounded-full text-sm">👍 124K</button>
+                    <button class="bg-[#222] hover:bg-[#333] px-4 py-2 rounded-full text-sm">Share</button>
+                    <button class="bg-[#D4AF37] text-black px-4 py-2 rounded-full text-sm font-bold" onclick="engine.collectFee()">Buy Access ($4.99)</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="side-feed" class="col-span-12 lg:col-span-4 space-y-4">
+            </div>
+
+    </main>
+
+    <div class="fixed bottom-4 left-4 bg-black border border-[#D4AF37] p-3 rounded-xl text-xs">
+        CEO VAULT: <span id="vault" class="text-[#00ff00] font-bold">$0.00</span>
+    </div>
+
+    <script>
+        const engine = {
+            profit: 0,
+            db: [
+                { title: "Midnight Paris 4K", user: "Empire Records", views: "1.2M", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34" },
+                { title: "Dubai Drift: Golden Hour", user: "Desert Vibes", views: "800K", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c" },
+                { title: "Tokyo Neon Lights", user: "SynthWave", views: "2.5M", img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf" },
+                { title: "New York Street Hustle", user: "Big Apple", views: "3.1M", img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9" }
+            ],
+
+            render: function(list) {
+                const feed = document.getElementById('side-feed');
+                feed.innerHTML = list.map(v => `
+                    <div class="flex gap-3 cursor-pointer group" onclick="engine.play('${v.title}', '${v.img}')">
+                        <div class="sidebar-thumb bg-cover bg-center" style="background-image: url('${v.img}')"></div>
+                        <div class="flex flex-col">
+                            <h4 class="text-sm font-bold line-clamp-2 group-hover:text-[#D4AF37]">${v.title}</h4>
+                            <p class="text-xs text-gray-400 mt-1">${v.user}</p>
+                            <p class="text-xs text-gray-400">${v.views} views</p>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            play: function(title, img) {
+                document.getElementById('active-title').innerText = title;
+                document.getElementById('active-video-img').src = img;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            search: function(q) {
+                const filtered = this.db.filter(v => v.title.toLowerCase().includes(q.toLowerCase()));
+                this.render(filtered);
+            },
+
+            collectFee: function() {
+                this.profit += 4.99;
+                document.getElementById('vault').innerText = "$" + this.profit.toFixed(2);
+                alert("CEO Action: $4.99 added to Vault.");
+            }
+        };
+
+        engine.render(engine.db);
+    </script>
+</body>
+</html>
