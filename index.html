@@ -59,7 +59,7 @@
         </div>
 
         <div id="side-feed" class="col-span-12 lg:col-span-4 space-y-4">
-            </div>
+        </div>
 
     </main>
 
@@ -71,7 +71,6 @@
         const engine = {
             profit: 0,
             db: [
-                { title: "Midnight Paris 4K", user: "Empire Records", views: "1.2M", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34" },
                 { title: "Dubai Drift: Golden Hour", user: "Desert Vibes", views: "800K", img: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c" },
                 { title: "Tokyo Neon Lights", user: "SynthWave", views: "2.5M", img: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf" },
                 { title: "New York Street Hustle", user: "Big Apple", views: "3.1M", img: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9" }
@@ -114,7 +113,7 @@
                     videoCard.appendChild(contentDiv);
                     
                     videoCard.onclick = () => engine.play(v.title, v.img);
-                    videoCard.onkeypress = (e) => {
+                    videoCard.onkeydown = (e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
                             engine.play(v.title, v.img);
@@ -126,7 +125,7 @@
             },
 
             play: function(title, img) {
-                document.getElementById('active-title').innerText = title;
+                document.getElementById('active-title').textContent = title;
                 document.getElementById('active-video-img').src = img;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
